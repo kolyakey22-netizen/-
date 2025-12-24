@@ -1,68 +1,193 @@
 Building for debugging...
-[0/4] Write swift-version--1AB21518FC5DEDBE.txt
-[2/8] Emitting module TelegramUIDScanner
-[3/8] Compiling TelegramUIDScanner QueueManager.swift
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:65:28: [1;31merror: [1;39mcannot find 'NSApp' in scope[0;0m
- [0;36m63 |[0;0m         
- [0;36m64 |[0;0m         await MainActor.run {
- [0;36m65 |[0;0m             if let scene = [4;39mNSApp[0;0m.orderedWindows.first?.windowScene,
-    [0;36m|[0;0m                            `- [1;31merror: [1;39mcannot find 'NSApp' in scope[0;0m
- [0;36m66 |[0;0m                let delegate = scene.delegate as? NSWindowSceneDelegate,
- [0;36m67 |[0;0m                let window = delegate.window as? NSWindow,
-[4/8] Compiling TelegramUIDScanner TelegramService.swift
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:273:19: [1;31merror: [1;39mmain actor-isolated property 'isPersistentRunning' can not be mutated from a Sendable closure[0;0m
- [0;36m10 |[0;0m     private var inputPipe: Pipe?
- [0;36m11 |[0;0m     private var outputPipe: Pipe?
- [0;36m12 |[0;0m     private var isPersistentRunning = false
-    [0;36m|[0;0m                 `- [1;39mnote: [1;39mmutation of this property is only permitted within the actor[0;0m
- [0;36m13 |[0;0m     
- [0;36m14 |[0;0m     private init() {
+[0/3] Write swift-version--1AB21518FC5DEDBE.txt
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+[2/7] Emitting module TelegramUIDScanner
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:136:16: [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+[0;36m133 |[0;0m 
+[0;36m134 |[0;0m // Дополнительный сервис для уведомлений только Эвелин
+[0;36m135 |[0;0m class NotificationManager {
+    [0;36m|[0;0m       `- [1;39mnote: [1;39mclass 'NotificationManager' does not conform to the 'Sendable' protocol[0;0m
+[0;36m136 |[0;0m     static let shared = NotificationManager()
+    [0;36m|[0;0m                |- [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+    [0;36m|[0;0m                |- [1;39mnote: [1;39madd '@MainActor' to make static property 'shared' part of global actor 'MainActor'[0;0m
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mdisable concurrency-safety checks if accesses are protected by an external synchronization mechanism[0;0m
+[0;36m137 |[0;0m     
+[0;36m138 |[0;0m     private var sentNotifications: Set<String> = []
+
+[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
+[3/7] Compiling TelegramUIDScanner TelegramService.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:29:49: [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
+ [0;36m27 |[0;0m     
+ [0;36m28 |[0;0m     private func setupRequestManager() {
+ [0;36m29 |[0;0m         requestManager.onRequestStart = { [weak self] account, uid in
+    [0;36m|[0;0m                                                 `- [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
+ [0;36m30 |[0;0m             print("🚀 Начинаем запрос UID: \(uid) через \(account.name)")
+ [0;36m31 |[0;0m         }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:33:52: [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
+ [0;36m31 |[0;0m         }
+ [0;36m32 |[0;0m         
+ [0;36m33 |[0;0m         requestManager.onRequestComplete = { [weak self] account, uid, success, response in
+    [0;36m|[0;0m                                                    `- [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
+ [0;36m34 |[0;0m             if success {
+ [0;36m35 |[0;0m                 print("✅ Запрос \(uid) выполнен")
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:29:24: [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be mutated from the main actor[0;0m
+ [0;36m27 |[0;0m     
+ [0;36m28 |[0;0m     private func setupRequestManager() {
+ [0;36m29 |[0;0m         requestManager.onRequestStart = { [weak self] account, uid in
+    [0;36m|[0;0m                        `- [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be mutated from the main actor[0;0m
+ [0;36m30 |[0;0m             print("🚀 Начинаем запрос UID: \(uid) через \(account.name)")
+ [0;36m31 |[0;0m         }
     [0;36m:[0;0m
-[0;36m271 |[0;0m         
-[0;36m272 |[0;0m         process.terminationHandler = { [weak self] _ in
-[0;36m273 |[0;0m             self?.isPersistentRunning = false
-    [0;36m|[0;0m                   `- [1;31merror: [1;39mmain actor-isolated property 'isPersistentRunning' can not be mutated from a Sendable closure[0;0m
-[0;36m274 |[0;0m             print("Persistent process terminated")
-[0;36m275 |[0;0m         }
+[0;36m348 |[0;0m     private var outputPipe: Pipe?
+[0;36m349 |[0;0m     
+[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
+    [0;36m|[0;0m         `- [1;39mnote: [1;39mmutation of this property is only permitted within the actor[0;0m
+[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
+[0;36m352 |[0;0m     
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:323:23: [1;33mwarning: [1;39mvalue 'self' was defined but never used; consider replacing with boolean test[0;0m [#no-usage]
-[0;36m321 |[0;0m         
-[0;36m322 |[0;0m         return try await withTimeout(seconds: 35, operation: { [weak self] in
-[0;36m323 |[0;0m             guard let self = self else {
-    [0;36m|[0;0m                       `- [1;33mwarning: [1;39mvalue 'self' was defined but never used; consider replacing with boolean test[0;0m [#no-usage]
-[0;36m324 |[0;0m                 throw NSError(domain: "TelegramService", code: 0, 
-[0;36m325 |[0;0m                             userInfo: [NSLocalizedDescriptionKey: "Service deallocated"])
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:33:24: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be mutated from the main actor[0;0m
+ [0;36m31 |[0;0m         }
+ [0;36m32 |[0;0m         
+ [0;36m33 |[0;0m         requestManager.onRequestComplete = { [weak self] account, uid, success, response in
+    [0;36m|[0;0m                        `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be mutated from the main actor[0;0m
+ [0;36m34 |[0;0m             if success {
+ [0;36m35 |[0;0m                 print("✅ Запрос \(uid) выполнен")
+    [0;36m:[0;0m
+[0;36m349 |[0;0m     
+[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
+[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
+    [0;36m|[0;0m         `- [1;39mnote: [1;39mmutation of this property is only permitted within the actor[0;0m
+[0;36m352 |[0;0m     
+[0;36m353 |[0;0m     private func ensureProcess() throws {
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:421:14: [1;31merror: [1;39mcapture of 'self' in a closure that outlives deinit[0;0m
-[0;36m419 |[0;0m     
-[0;36m420 |[0;0m     deinit {
-[0;36m421 |[0;0m         Task {
-    [0;36m|[0;0m              `- [1;31merror: [1;39mcapture of 'self' in a closure that outlives deinit[0;0m
-[0;36m422 |[0;0m             await stopPersistentProcessAsync()
-[0;36m423 |[0;0m         }
-[5/8] Compiling TelegramUIDScanner ContentView.swift
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:357:13: [1;33mwarning: [1;39minitialization of immutable value 'taskId' was never used; consider replacing with assignment to '_' or removing it[0;0m [#no-usage]
-[0;36m355 |[0;0m     
-[0;36m356 |[0;0m     private func processUID(_ uid: String, for account: TelegramAccount) async {
-[0;36m357 |[0;0m         let taskId = RequestQueueManager.shared.addRequest(account: account, uid: uid) { result in
-    [0;36m|[0;0m             `- [1;33mwarning: [1;39minitialization of immutable value 'taskId' was never used; consider replacing with assignment to '_' or removing it[0;0m [#no-usage]
-[0;36m358 |[0;0m             Task { @MainActor in
-[0;36m359 |[0;0m                 switch result {
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:389:26: [1;31merror: [1;39mtype 'Any' does not conform to the 'Sendable' protocol[0;0m
+[0;36m387 |[0;0m         }
+[0;36m388 |[0;0m         
+[0;36m389 |[0;0m         return try await withTimeout(seconds: 40) {
+    [0;36m|[0;0m                          `- [1;31merror: [1;39mtype 'Any' does not conform to the 'Sendable' protocol[0;0m
+[0;36m390 |[0;0m             inputPipe.fileHandleForWriting.write((jsonString + "\n").data(using: .utf8) ?? Data())
+[0;36m391 |[0;0m             
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:357:49: [1;31merror: [1;39mactor-isolated instance method 'addRequest(account:uid:priority:completion:)' cannot be called from outside of the actor[0;0m
-[0;36m355 |[0;0m     
-[0;36m356 |[0;0m     private func processUID(_ uid: String, for account: TelegramAccount) async {
-[0;36m357 |[0;0m         let taskId = [4;39mRequestQueueManager.shared.addRequest(account: account, uid: uid) { result in[0;0m
-    [0;36m|[0;0m                                                 `- [1;31merror: [1;39mactor-isolated instance method 'addRequest(account:uid:priority:completion:)' cannot be called from outside of the actor[0;0m
-[0;36m358 |[0;0m             Task { @MainActor in
-[0;36m359 |[0;0m                 switch result {
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:427:13: [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be referenced from the main actor[0;0m
+[0;36m348 |[0;0m     private var outputPipe: Pipe?
+[0;36m349 |[0;0m     
+[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
+    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
+[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
+[0;36m352 |[0;0m     
+    [0;36m:[0;0m
+[0;36m425 |[0;0m     func sendRequest(account: TelegramAccount, uid: String) async throws -> String {
+[0;36m426 |[0;0m         await MainActor.run {
+[0;36m427 |[0;0m             onRequestStart?(account, uid)
+    [0;36m|[0;0m             `- [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be referenced from the main actor[0;0m
+[0;36m428 |[0;0m         }
+[0;36m429 |[0;0m         
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:619:18: [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
-[0;36m617 |[0;0m                     .padding(.vertical, 4)
-[0;36m618 |[0;0m                 }
-[0;36m619 |[0;0m                 .onChange(of: appState.logs.count) { _ in
-    [0;36m|[0;0m                  `- [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
-[0;36m620 |[0;0m                     if let lastId = appState.logs.first?.id {
-[0;36m621 |[0;0m                         withAnimation {
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:448:29: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
+[0;36m349 |[0;0m     
+[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
+[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
+    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
+[0;36m352 |[0;0m     
+[0;36m353 |[0;0m     private func ensureProcess() throws {
+    [0;36m:[0;0m
+[0;36m446 |[0;0m                     if let responseText = response["response"] as? String {
+[0;36m447 |[0;0m                         await MainActor.run {
+[0;36m448 |[0;0m                             onRequestComplete?(account, uid, true, responseText)
+    [0;36m|[0;0m                             `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
+[0;36m449 |[0;0m                         }
+[0;36m450 |[0;0m                         return responseText
 
-[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:472:17: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
+[0;36m349 |[0;0m     
+[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
+[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
+    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
+[0;36m352 |[0;0m     
+[0;36m353 |[0;0m     private func ensureProcess() throws {
+    [0;36m:[0;0m
+[0;36m470 |[0;0m             let errorMessage = response["message"] as? String ?? "Unknown error"
+[0;36m471 |[0;0m             await MainActor.run {
+[0;36m472 |[0;0m                 onRequestComplete?(account, uid, false, errorMessage)
+    [0;36m|[0;0m                 `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
+[0;36m473 |[0;0m             }
+[0;36m474 |[0;0m             throw NSError(domain: "RequestManager", code: 5, 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:479:17: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
+[0;36m349 |[0;0m     
+[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
+[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
+    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
+[0;36m352 |[0;0m     
+[0;36m353 |[0;0m     private func ensureProcess() throws {
+    [0;36m:[0;0m
+[0;36m477 |[0;0m         } catch {
+[0;36m478 |[0;0m             await MainActor.run {
+[0;36m479 |[0;0m                 onRequestComplete?(account, uid, false, error.localizedDescription)
+    [0;36m|[0;0m                 `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
+[0;36m480 |[0;0m             }
+[0;36m481 |[0;0m             throw error
+[4/7] Compiling TelegramUIDScanner ContentView.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:13:13: [1;31merror: [1;39mcannot find 'SidebarView' in scope[0;0m
+  [0;36m11 |[0;0m     var body: some View {
+  [0;36m12 |[0;0m         NavigationSplitView {
+  [0;36m13 |[0;0m             [4;39mSidebarView[0;0m(selectedAccount: $selectedAccount)
+     [0;36m|[0;0m             `- [1;31merror: [1;39mcannot find 'SidebarView' in scope[0;0m
+  [0;36m14 |[0;0m                 .navigationSplitViewColumnWidth(min: 250, ideal: 280, max: 350)
+  [0;36m15 |[0;0m         } detail: {
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:191:21: [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
+ [0;36m189 |[0;0m             Form {
+ [0;36m190 |[0;0m                 Section("Общая статистика") {
+ [0;36m191 |[0;0m                     [4;39mStatRow[0;0m(title: "Обработано UID:", value: "\(appState.totalProcessed)")
+     [0;36m|[0;0m                     `- [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
+ [0;36m192 |[0;0m                     StatRow(title: "Найдено депозитов:", value: "\(appState.totalFound)")
+ [0;36m193 |[0;0m                     StatRow(title: "Успешных запросов:", 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:192:21: [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
+ [0;36m190 |[0;0m                 Section("Общая статистика") {
+ [0;36m191 |[0;0m                     StatRow(title: "Обработано UID:", value: "\(appState.totalProcessed)")
+ [0;36m192 |[0;0m                     [4;39mStatRow[0;0m(title: "Найдено депозитов:", value: "\(appState.totalFound)")
+     [0;36m|[0;0m                     `- [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
+ [0;36m193 |[0;0m                     StatRow(title: "Успешных запросов:", 
+ [0;36m194 |[0;0m                            value: "\(appState.totalProcessed > 0 ? String(format: "%.1f%%", Double(appState.totalFound) / Double(appState.totalProcessed) * 100) : "0%")",
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:193:21: [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
+ [0;36m191 |[0;0m                     StatRow(title: "Обработано UID:", value: "\(appState.totalProcessed)")
+ [0;36m192 |[0;0m                     StatRow(title: "Найдено депозитов:", value: "\(appState.totalFound)")
+ [0;36m193 |[0;0m                     [4;39mStatRow[0;0m(title: "Успешных запросов:", 
+     [0;36m|[0;0m                     `- [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
+ [0;36m194 |[0;0m                            value: "\(appState.totalProcessed > 0 ? String(format: "%.1f%%", Double(appState.totalFound) / Double(appState.totalProcessed) * 100) : "0%")",
+ [0;36m195 |[0;0m                            color: .green)
+[5/7] Compiling TelegramUIDScanner QueueManager.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:136:16: [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+[0;36m133 |[0;0m 
+[0;36m134 |[0;0m // Дополнительный сервис для уведомлений только Эвелин
+[0;36m135 |[0;0m class NotificationManager {
+    [0;36m|[0;0m       `- [1;39mnote: [1;39mclass 'NotificationManager' does not conform to the 'Sendable' protocol[0;0m
+[0;36m136 |[0;0m     static let shared = NotificationManager()
+    [0;36m|[0;0m                |- [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
+    [0;36m|[0;0m                |- [1;39mnote: [1;39madd '@MainActor' to make static property 'shared' part of global actor 'MainActor'[0;0m
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mdisable concurrency-safety checks if accesses are protected by an external synchronization mechanism[0;0m
+[0;36m137 |[0;0m     
+[0;36m138 |[0;0m     private var sentNotifications: Set<String> = []
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:75:13: [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
+ [0;36m73 |[0;0m             accountStats[account.id] = stats
+ [0;36m74 |[0;0m             
+ [0;36m75 |[0;0m             await completion(.success(response))
+    [0;36m|[0;0m             `- [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
+ [0;36m76 |[0;0m             
+ [0;36m77 |[0;0m         } catch {
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:104:13: [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
+[0;36m102 |[0;0m             accountStats[account.id] = stats
+[0;36m103 |[0;0m             
+[0;36m104 |[0;0m             await completion(.failure(error))
+    [0;36m|[0;0m             `- [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
+[0;36m105 |[0;0m         }
+[0;36m106 |[0;0m         
+
+[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
