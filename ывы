@@ -1,688 +1,171 @@
-       }
-    }
-
-    func cleanup() {
-        cleanupTask?.cancel()
-        cleanupTask = nil
-        stopPersistentProcess()
-    }
-
-    deinit {
-        // Просто отменяем задачу очистки, она сама вызовет stopPersistentProcess
-        cleanupTask?.cancel()
-    }
-}
 EOF
-mk@mav TelegramUIDScanner % swift build
-
-Building for debugging...
-[10/10] Applying TelegramUIDScanner
-Build complete! (2.72s)
-mk@mav TelegramUIDScanner % swift run
-
-Building for debugging...
-[1/1] Write swift-version--1AB21518FC5DEDBE.txt
-Build of product 'TelegramUIDScanner' complete! (0.08s)
-^C
-mk@mav TelegramUIDScanner % >....                                               
-        }
-
-        if telegramMetrics.averageResponseTime > 10 {
-            recommendations.append("• Проверьте скорость интернета")
-        }
-
-        return recommendations.isEmpty ? "• Все параметры в норме" : recommendations.joined(separator: "\n")
-    }
-
-    private func formatTime(_ seconds: TimeInterval) -> String {
-        let hours = Int(seconds) / 3600
-        let minutes = (Int(seconds) % 3600) / 60
-        let seconds = Int(seconds) % 60
-
-        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
-    }
-
-    deinit {
-        stopMonitoring()
-    }
-}
-EOF
-mk@mav TelegramUIDScanner % cd ~/TelegramUIDScanner
-
-mk@mav TelegramUIDScanner % >....                                               
-    private func getRecommendations() -> String {
-        var recommendations: [String] = []
-        let stats = getQueueStatus()
-        let speedStats = getStats()
-
-        if stats.pending > 100 && activeThreads < maxConcurrentThreads {
-            recommendations.append("• Можно увеличить количество потоков")
-        }
-
-        if speedStats.failed > speedStats.successful * 0.3 {
-            recommendations.append("• Много ошибок - проверьте аккаунты")
-        }
-
-        if speedStats.averageProcessingTime > 10.0 {
-            recommendations.append("• Высокое время ответа - возможно проблемы с сетью")
-        }
-
-        return recommendations.isEmpty ? "• Все параметры оптимизированы" : recommendations.joined(separator: "\n")
-    }
-}
-EOF
-mk@mav TelegramUIDScanner % swift build
-[1/1] Planning build
-Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
- 49 |     }
- 50 |     
- 51 |     func stopMonitoring() {
-    |          `- note: calls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous
- 52 |         isMonitoring = false
- 53 |         monitoringTask?.cancel()
-    :
-238 |     
-239 |     deinit {
-240 |         stopMonitoring()
-    |         `- error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
-241 |     }
-242 | }
-
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:66:40: error: call to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context [#ActorIsolatedCall]
- 64 |         
- 65 |         if account.isEvelyn {
- 66 |             NotificationManager.shared.sendEvelynNotification(
-    |                                        `- error: call to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context [#ActorIsolatedCall]
- 67 |                 "📥 Многопоточная обработка\nДобавлено: \(uids.count) UID\nМакс. потоков: \(maxConcurrentThreads)",
- 68 |                 type: .info
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:144:10: note: calls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous
-142 |     private let notificationCooldown: TimeInterval = 300 // 5 минут
-143 |     
-144 |     func sendEvelynNotification(_ message: String, type: NotificationType = .info) {
-    |          `- note: calls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous
-145 |         // Проверяем, не отправляли ли мы уже такое уведомление
-146 |         let notificationHash = "\(message.hashValue)"
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:66:33: error: main actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance
- 64 |         
- 65 |         if account.isEvelyn {
- 66 |             NotificationManager.shared.sendEvelynNotification(
-    |                                 `- error: main actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance
- 67 |                 "📥 Многопоточная обработка\nДобавлено: \(uids.count) UID\nМакс. потоков: \(maxConcurrentThreads)",
- 68 |                 type: .info
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:139:16: note: static property declared here
-137 | @MainActor
-138 | class NotificationManager {
-139 |     static let shared = NotificationManager()
-    |                `- note: static property declared here
-140 |     
-141 |     private var sentNotifications: Set<String> = []
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:175:27: warning: result of call to 'addJob(account:uid:priority:)' is unused [#no-usage]
-173 |                     // Ждем и добавляем снова
-174 |                     try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 сек
-175 |                     await addJob(account: job.account, uid: job.uid, priority: job.priority + 1)
-    |                           `- warning: result of call to 'addJob(account:uid:priority:)' is unused [#no-usage]
-176 |                     
-177 |                 } else {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:175:21: warning: no 'async' operations occur within 'await' expression
-173 |                     // Ждем и добавляем снова
-174 |                     try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 сек
-175 |                     await addJob(account: job.account, uid: job.uid, priority: job.priority + 1)
-    |                     `- warning: no 'async' operations occur within 'await' expression
-176 |                     
-177 |                 } else {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:197:36: error: call to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context [#ActorIsolatedCall]
-195 |         print("⏸️ Многопоточная обработка приостановлена")
-196 |         
-197 |         NotificationManager.shared.sendEvelynNotification(
-    |                                    `- error: call to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context [#ActorIsolatedCall]
-198 |             "⏸️ МНОГОПОТОЧНАЯ ОБРАБОТКА ПРИОСТАНОВЛЕНА\nАктивных задач: \(queue.filter { $0.status == .processing }.count)",
-199 |             type: .warning
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:144:10: note: calls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous
-142 |     private let notificationCooldown: TimeInterval = 300 // 5 минут
-143 |     
-144 |     func sendEvelynNotification(_ message: String, type: NotificationType = .info) {
-    |          `- note: calls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous
-145 |         // Проверяем, не отправляли ли мы уже такое уведомление
-146 |         let notificationHash = "\(message.hashValue)"
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:197:29: error: main actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance
-195 |         print("⏸️ Многопоточная обработка приостановлена")
-196 |         
-197 |         NotificationManager.shared.sendEvelynNotification(
-    |                             `- error: main actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance
-198 |             "⏸️ МНОГОПОТОЧНАЯ ОБРАБОТКА ПРИОСТАНОВЛЕНА\nАктивных задач: \(queue.filter { $0.status == .processing }.count)",
-199 |             type: .warning
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:139:16: note: static property declared here
-137 | @MainActor
-138 | class NotificationManager {
-139 |     static let shared = NotificationManager()
-    |                `- note: static property declared here
-140 |     
-141 |     private var sentNotifications: Set<String> = []
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:224:36: error: call to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context [#ActorIsolatedCall]
-222 |         print("🧹 Очередь очищена")
-223 |         
-224 |         NotificationManager.shared.sendEvelynNotification(
-    |                                    `- error: call to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context [#ActorIsolatedCall]
-225 |             "🧹 ОЧЕРЕДЬ ОЧИЩЕНА\nВсе задачи отменены",
-226 |             type: .info
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:144:10: note: calls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous
-142 |     private let notificationCooldown: TimeInterval = 300 // 5 минут
-143 |     
-144 |     func sendEvelynNotification(_ message: String, type: NotificationType = .info) {
-    |          `- note: calls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous
-145 |         // Проверяем, не отправляли ли мы уже такое уведомление
-146 |         let notificationHash = "\(message.hashValue)"
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:224:29: error: main actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance
-222 |         print("🧹 Очередь очищена")
-223 |         
-224 |         NotificationManager.shared.sendEvelynNotification(
-    |                             `- error: main actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance
-225 |             "🧹 ОЧЕРЕДЬ ОЧИЩЕНА\nВсе задачи отменены",
-226 |             type: .info
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:139:16: note: static property declared here
-137 | @MainActor
-138 | class NotificationManager {
-139 |     static let shared = NotificationManager()
-    |                `- note: static property declared here
-140 |     
-141 |     private var sentNotifications: Set<String> = []
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:297:56: error: cannot convert value of type 'Double' to expected argument type 'Int'
-295 |         }
-296 |         
-297 |         if speedStats.failed > speedStats.successful * 0.3 {
-    |                                                        `- error: cannot convert value of type 'Double' to expected argument type 'Int'
-298 |             recommendations.append("• Много ошибок - проверьте аккаунты")
-299 |         }
-
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-[5/8] Compiling TelegramUIDScanner ParallelProcessor.swift
-mk@mav TelegramUIDScanner % swift build 2>&1 | pbcopy
-mk@mav TelegramUIDScanner % >....                                               
-    func clearAll() {
-        for task in processingTasks.values {
-            task.cancel()
-        }
-
-        processingTasks.removeAll()
-        queue.removeAll()
-        activeThreads = 0
-        isProcessing = false
-    }
-
-    func cancelJob(id: UUID) {
-        processingTasks[id]?.cancel()
-        processingTasks.removeValue(forKey: id)
-
-        if let index = queue.firstIndex(where: { $0.id == id }) {
-            queue.remove(at: index)
-        }
-
-        activeThreads = queue.filter { $0.status == .processing }.count
-    }
-}
-EOF
-mk@mav TelegramUIDScanner % swift build
-Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:30:17: error: extra argument 'id' in call
- 28 |     func addJob(account: TelegramAccount, uid: String, priority: Int = 0) -> UUID {
- 29 |         let job = ProcessingJob(
- 30 |             id: UUID(),
-    |                 `- error: extra argument 'id' in call
- 31 |             account: account,
- 32 |             uid: uid,
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
- 49 |     }
- 50 |     
- 51 |     func stopMonitoring() {
-    |          `- note: calls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous
- 52 |         isMonitoring = false
- 53 |         monitoringTask?.cancel()
-    :
-238 |     
-239 |     deinit {
-240 |         stopMonitoring()
-    |         `- error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
-241 |     }
-242 | }
-
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-[5/8] Compiling TelegramUIDScanner MonitoringService.swift
-mk@mav TelegramUIDScanner % cd ~/TelegramUIDScanner
-
-mk@mav TelegramUIDScanner % >....                                               
-        processingTasks[id]?.cancel()
-        processingTasks.removeValue(forKey: id)
-
-        if let index = queue.firstIndex(where: { $0.id == id }) {
-            queue.remove(at: index)
-        }
-    }
-
-    func getQueueStats() async -> (total: Int, active: Int, pending: Int, completed: Int) {
-        let total = queue.count
-        let active = queue.filter { $0.status == .processing }.count
-        let pending = queue.filter { $0.status == .pending }.count
-        let completed = queue.filter { $0.status == .completed }.count
-
-        return (total, active, pending, completed)
-    }
-
-    func clearCompleted() async {
-        queue.removeAll { $0.status == .completed || $0.status == .failed }
-    }
-}
-EOF
-mk@mav TelegramUIDScanner % swift build
-Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:28:37: error: extra argument 'id' in call
- 26 |     
- 27 |     func addJob(account: TelegramAccount, uid: String, priority: Int = 0) async -> UUID {
- 28 |         let job = ProcessingJob(id: UUID(), account: account, uid: uid, priority: priority)
-    |                                     `- error: extra argument 'id' in call
- 29 |         queue.append(job)
- 30 |         queue.sort { $0.priority > $1.priority } // Сортируем по приоритету
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:76:32: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 74 |             // Обновляем UI
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 77 |                     queue[index] = currentJob
- 78 |                 }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:77:21: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 77 |                     queue[index] = currentJob
-    |                     `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 78 |                 }
- 79 |             }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:92:36: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 90 |             } else {
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                    `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 93 |                         queue[index] = currentJob
- 94 |                     }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:93:25: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 93 |                         queue[index] = currentJob
-    |                         `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 94 |                     }
- 95 |                 }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
- 49 |     }
- 50 |     
- 51 |     func stopMonitoring() {
-    |          `- note: calls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous
- 52 |         isMonitoring = false
- 53 |         monitoringTask?.cancel()
-    :
-238 |     
-239 |     deinit {
-240 |         stopMonitoring()
-    |         `- error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
-241 |     }
-242 | }
-
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-[5/8] Compiling TelegramUIDScanner MonitoringService.swift
-mk@mav TelegramUIDScanner % >....                                               
-        let averageAmount: Double
-        let activeFilterCount: Int
-    }
-
-    func getQuickFilters() -> [QuickFilter] {
-        return [
-            QuickFilter(name: "Крупные депозиты", type: .largeDeposit, value: ""),
-            QuickFilter(name: "Только избранное", type: .favorite, value: ""),
-            QuickFilter(name: "Сегодня", type: .date, value: "today"),
-            QuickFilter(name: "100-500$", type: .amountRange, value: "100-500"), 
-            QuickFilter(name: "500$+", type: .amountRange, value: "500+")
-        ]
-    }
-
-    struct QuickFilter {
-        let name: String
-        let type: Filter.FilterType
-        let value: String
-    }
-}
-EOF
-mk@mav TelegramUIDScanner % swift build
+mk@mav TelegramUIDScanner % swift build && swift run
 
 [1/1] Planning build
 Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:28:37: error: extra argument 'id' in call
- 26 |     
- 27 |     func addJob(account: TelegramAccount, uid: String, priority: Int = 0) async -> UUID {
- 28 |         let job = ProcessingJob(id: UUID(), account: account, uid: uid, priority: priority)
-    |                                     `- error: extra argument 'id' in call
- 29 |         queue.append(job)
- 30 |         queue.sort { $0.priority > $1.priority } // Сортируем по приоритету
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:57: error: single-quoted string literal found, use '"'
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                                         `- error: single-quoted string literal found, use '"'
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:76:32: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 74 |             // Обновляем UI
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 77 |                     queue[index] = currentJob
- 78 |                 }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: expressions are not allowed at the top level
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: expressions are not allowed at the top level
+449 | import SwiftUI
+450 | 
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:57: error: single-quoted string literal found, use '"'
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                                         `- error: single-quoted string literal found, use '"'
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:77:21: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 77 |                     queue[index] = currentJob
-    |                     `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 78 |                 }
- 79 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: expressions are not allowed at the top level
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: expressions are not allowed at the top level
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:92:36: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 90 |             } else {
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                    `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 93 |                         queue[index] = currentJob
- 94 |                     }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: cannot find 'cat' in scope
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: cannot find 'cat' in scope
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:93:25: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 93 |                         queue[index] = currentJob
-    |                         `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 94 |                     }
- 95 |                 }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
- 49 |     }
- 50 |     
- 51 |     func stopMonitoring() {
-    |          `- note: calls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous
- 52 |         isMonitoring = false
- 53 |         monitoringTask?.cancel()
-    :
-238 |     
-239 |     deinit {
-240 |         stopMonitoring()
-    |         `- error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
-241 |     }
-242 | }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:7: error: cannot find 'Sources' in scope
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |       `- error: cannot find 'Sources' in scope
+449 | import SwiftUI
+450 | 
 
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/NotificationService.swift:41:22: warning: main actor-isolated property 'lastNotificationTime' can not be mutated from a Sendable closure
- 6 |     static let shared = NotificationService()
- 7 |     
- 8 |     private var lastNotificationTime: Date = .distantPast
-   |                 `- note: mutation of this property is only permitted within the actor
- 9 |     private let notificationCooldown: TimeInterval = 300
-10 |     
-   :
-39 |                 print("Error adding notification: \(error)")
-40 |             } else {
-41 |                 self.lastNotificationTime = now
-   |                      `- warning: main actor-isolated property 'lastNotificationTime' can not be mutated from a Sendable closure
-42 |             }
-43 |         }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/NotificationService.swift:41:22: warning: main actor-isolated property 'lastNotificationTime' can not be mutated from a Sendable closure
- 6 |     static let shared = NotificationService()
- 7 |     
- 8 |     private var lastNotificationTime: Date = .distantPast
-   |                 `- note: mutation of this property is only permitted within the actor
- 9 |     private let notificationCooldown: TimeInterval = 300
-10 |     
-   :
-39 |                 print("Error adding notification: \(error)")
-40 |             } else {
-41 |                 self.lastNotificationTime = now
-   |                      `- warning: main actor-isolated property 'lastNotificationTime' can not be mutated from a Sendable closure
-42 |             }
-43 |         }
-[16/19] Compiling TelegramUIDScanner ContentView.swift
-mk@mav TelegramUIDScanner % swift run
-Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
- 49 |     }
- 50 |     
- 51 |     func stopMonitoring() {
-    |          `- note: calls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous
- 52 |         isMonitoring = false
- 53 |         monitoringTask?.cancel()
-    :
-238 |     
-239 |     deinit {
-240 |         stopMonitoring()
-    |         `- error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
-241 |     }
-242 | }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:34: error: cannot find 'Views' in scope
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                  `- error: cannot find 'Views' in scope
+449 | import SwiftUI
+450 | 
 
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:28:37: error: extra argument 'id' in call
- 26 |     
- 27 |     func addJob(account: TelegramAccount, uid: String, priority: Int = 0) async -> UUID {
- 28 |         let job = ProcessingJob(id: UUID(), account: account, uid: uid, priority: priority)
-    |                                     `- error: extra argument 'id' in call
- 29 |         queue.append(job)
- 30 |         queue.sort { $0.priority > $1.priority } // Сортируем по приоритету
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+449 | import SwiftUI
+450 | 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:57: error: single-quoted string literal found, use '"'
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                                         `- error: single-quoted string literal found, use '"'
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:76:32: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 74 |             // Обновляем UI
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 77 |                     queue[index] = currentJob
- 78 |                 }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: expressions are not allowed at the top level
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: expressions are not allowed at the top level
+449 | import SwiftUI
+450 | 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:57: error: single-quoted string literal found, use '"'
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                                         `- error: single-quoted string literal found, use '"'
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:77:21: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 77 |                     queue[index] = currentJob
-    |                     `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 78 |                 }
- 79 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: expressions are not allowed at the top level
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: expressions are not allowed at the top level
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:92:36: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 90 |             } else {
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                    `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 93 |                         queue[index] = currentJob
- 94 |                     }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: cannot find 'cat' in scope
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: cannot find 'cat' in scope
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:93:25: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 93 |                         queue[index] = currentJob
-    |                         `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 94 |                     }
- 95 |                 }
-[4/7] Compiling TelegramUIDScanner ParallelProcessor.swift
-mk@mav TelegramUIDScanner % cd ~/TelegramUIDScanner
-swift build
-Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
- 49 |     }
- 50 |     
- 51 |     func stopMonitoring() {
-    |          `- note: calls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous
- 52 |         isMonitoring = false
- 53 |         monitoringTask?.cancel()
-    :
-238 |     
-239 |     deinit {
-240 |         stopMonitoring()
-    |         `- error: call to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context [#ActorIsolatedCall]
-241 |     }
-242 | }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:7: error: cannot find 'Sources' in scope
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |       `- error: cannot find 'Sources' in scope
+449 | import SwiftUI
+450 | 
 
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:28:37: error: extra argument 'id' in call
- 26 |     
- 27 |     func addJob(account: TelegramAccount, uid: String, priority: Int = 0) async -> UUID {
- 28 |         let job = ProcessingJob(id: UUID(), account: account, uid: uid, priority: priority)
-    |                                     `- error: extra argument 'id' in call
- 29 |         queue.append(job)
- 30 |         queue.sort { $0.priority > $1.priority } // Сортируем по приоритету
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:34: error: cannot find 'Views' in scope
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                  `- error: cannot find 'Views' in scope
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:76:32: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 74 |             // Обновляем UI
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 77 |                     queue[index] = currentJob
- 78 |                 }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: the compiler is unable to type-check this expression in reasonable time; try breaking up the expression into distinct sub-expressions
+449 | import SwiftUI
+450 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:77:21: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 75 |             await MainActor.run {
- 76 |                 if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 77 |                     queue[index] = currentJob
-    |                     `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 78 |                 }
- 79 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:49:13: error: cannot find 'StatisticsView' in scope
+ 47 |         }
+ 48 |         .sheet(isPresented: $showingStats) {
+ 49 |             StatisticsView()
+    |             `- error: cannot find 'StatisticsView' in scope
+ 50 |         }
+ 51 |         .sheet(isPresented: $showingAuthorization) {
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:92:36: error: actor-isolated property 'queue' can not be referenced from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: property declared here
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 90 |             } else {
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
-    |                                    `- error: actor-isolated property 'queue' can not be referenced from the main actor
- 93 |                         queue[index] = currentJob
- 94 |                     }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:80:17: error: cannot find 'EnhancedResultsTable' in scope
+ 78 |             
+ 79 |             if !appState.foundDeposits.isEmpty {
+ 80 |                 EnhancedResultsTable()
+    |                 `- error: cannot find 'EnhancedResultsTable' in scope
+ 81 |                     .frame(height: 300)
+ 82 |             }
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:93:25: error: actor-isolated property 'queue' can not be mutated from the main actor
-  7 |     private let maxConcurrentThreads = 3
-  8 |     private var activeThreads = 0
-  9 |     private var queue: [ProcessingJob] = []
-    |                 `- note: mutation of this property is only permitted within the actor
- 10 |     private var isProcessing = false
- 11 |     
-    :
- 91 |                 await MainActor.run {
- 92 |                     if let index = queue.firstIndex(where: { $0.id == currentJob.id }) {
- 93 |                         queue[index] = currentJob
-    |                         `- error: actor-isolated property 'queue' can not be mutated from the main actor
- 94 |                     }
- 95 |                 }
-[4/7] Compiling TelegramUIDScanner ParallelProcessor.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:201:23: error: cannot find 'processUID' in scope
+199 |                 }
+200 |                 
+201 |                 await processUID(uid, for: account)
+    |                       `- error: cannot find 'processUID' in scope
+202 |                 
+203 |                 // Динамическая задержка с рандомизацией
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:57: error: single-quoted string literal found, use '"'
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    |                                                         `- error: single-quoted string literal found, use '"'
+449 | import SwiftUI
+450 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:448:1: error: expressions are not allowed at the top level
+446 | 
+447 | // Обновляем LogView для исправления deprecated метода
+448 | cat > Sources/TelegramUIDScanner/Views/LogView.swift << 'EOF'
+    | `- error: expressions are not allowed at the top level
+449 | import SwiftUI
+450 | 
+[7/10] Compiling TelegramUIDScanner AppState.swift
 mk@mav TelegramUIDScanner % 
