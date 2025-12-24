@@ -1,290 +1,68 @@
-(venv) mk@mav TelegramUIDScanner % echo "✅ Проект полностью восстановлен и улучшен!"
-echo "Для запуска выполните:"
-echo "cd ~/TelegramUIDScanner"
-echo "swift build"
-echo "swift run"
-dquote> 
-(venv) mk@mav TelegramUIDScanner % cd ~/TelegramUIDScanner
-(venv) mk@mav TelegramUIDScanner % swift build
-[1/1] Planning build
 Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SecurityManager.swift:5:16: error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'SecurityManager' may have shared mutable state [#MutableGlobalVariable]
- 2 | import KeychainAccess
- 3 | 
- 4 | class SecurityManager {
-   |       `- note: class 'SecurityManager' does not conform to the 'Sendable' protocol
- 5 |     static let shared = SecurityManager()
-   |                |- error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'SecurityManager' may have shared mutable state [#MutableGlobalVariable]
-   |                |- note: add '@MainActor' to make static property 'shared' part of global actor 'MainActor'
-   |                `- note: disable concurrency-safety checks if accesses are protected by an external synchronization mechanism
- 6 |     private let keychain = Keychain(service: "com.telegram.uids.scanner")
- 7 |     
+[0/4] Write swift-version--1AB21518FC5DEDBE.txt
+[2/8] Emitting module TelegramUIDScanner
+[3/8] Compiling TelegramUIDScanner QueueManager.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:65:28: [1;31merror: [1;39mcannot find 'NSApp' in scope[0;0m
+ [0;36m63 |[0;0m         
+ [0;36m64 |[0;0m         await MainActor.run {
+ [0;36m65 |[0;0m             if let scene = [4;39mNSApp[0;0m.orderedWindows.first?.windowScene,
+    [0;36m|[0;0m                            `- [1;31merror: [1;39mcannot find 'NSApp' in scope[0;0m
+ [0;36m66 |[0;0m                let delegate = scene.delegate as? NSWindowSceneDelegate,
+ [0;36m67 |[0;0m                let window = delegate.window as? NSWindow,
+[4/8] Compiling TelegramUIDScanner TelegramService.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:273:19: [1;31merror: [1;39mmain actor-isolated property 'isPersistentRunning' can not be mutated from a Sendable closure[0;0m
+ [0;36m10 |[0;0m     private var inputPipe: Pipe?
+ [0;36m11 |[0;0m     private var outputPipe: Pipe?
+ [0;36m12 |[0;0m     private var isPersistentRunning = false
+    [0;36m|[0;0m                 `- [1;39mnote: [1;39mmutation of this property is only permitted within the actor[0;0m
+ [0;36m13 |[0;0m     
+ [0;36m14 |[0;0m     private init() {
+    [0;36m:[0;0m
+[0;36m271 |[0;0m         
+[0;36m272 |[0;0m         process.terminationHandler = { [weak self] _ in
+[0;36m273 |[0;0m             self?.isPersistentRunning = false
+    [0;36m|[0;0m                   `- [1;31merror: [1;39mmain actor-isolated property 'isPersistentRunning' can not be mutated from a Sendable closure[0;0m
+[0;36m274 |[0;0m             print("Persistent process terminated")
+[0;36m275 |[0;0m         }
 
-[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:38:13: warning: no 'async' operations occur within 'await' expression
- 36 |         
- 37 |         Task {
- 38 |             await updateQueueStatus()
-    |             `- warning: no 'async' operations occur within 'await' expression
- 39 |             await startProcessingIfNeeded()
- 40 |         }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:323:23: [1;33mwarning: [1;39mvalue 'self' was defined but never used; consider replacing with boolean test[0;0m [#no-usage]
+[0;36m321 |[0;0m         
+[0;36m322 |[0;0m         return try await withTimeout(seconds: 35, operation: { [weak self] in
+[0;36m323 |[0;0m             guard let self = self else {
+    [0;36m|[0;0m                       `- [1;33mwarning: [1;39mvalue 'self' was defined but never used; consider replacing with boolean test[0;0m [#no-usage]
+[0;36m324 |[0;0m                 throw NSError(domain: "TelegramService", code: 0, 
+[0;36m325 |[0;0m                             userInfo: [NSLocalizedDescriptionKey: "Service deallocated"])
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:39:13: warning: no 'async' operations occur within 'await' expression
- 37 |         Task {
- 38 |             await updateQueueStatus()
- 39 |             await startProcessingIfNeeded()
-    |             `- warning: no 'async' operations occur within 'await' expression
- 40 |         }
- 41 |         
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:421:14: [1;31merror: [1;39mcapture of 'self' in a closure that outlives deinit[0;0m
+[0;36m419 |[0;0m     
+[0;36m420 |[0;0m     deinit {
+[0;36m421 |[0;0m         Task {
+    [0;36m|[0;0m              `- [1;31merror: [1;39mcapture of 'self' in a closure that outlives deinit[0;0m
+[0;36m422 |[0;0m             await stopPersistentProcessAsync()
+[0;36m423 |[0;0m         }
+[5/8] Compiling TelegramUIDScanner ContentView.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:357:13: [1;33mwarning: [1;39minitialization of immutable value 'taskId' was never used; consider replacing with assignment to '_' or removing it[0;0m [#no-usage]
+[0;36m355 |[0;0m     
+[0;36m356 |[0;0m     private func processUID(_ uid: String, for account: TelegramAccount) async {
+[0;36m357 |[0;0m         let taskId = RequestQueueManager.shared.addRequest(account: account, uid: uid) { result in
+    [0;36m|[0;0m             `- [1;33mwarning: [1;39minitialization of immutable value 'taskId' was never used; consider replacing with assignment to '_' or removing it[0;0m [#no-usage]
+[0;36m358 |[0;0m             Task { @MainActor in
+[0;36m359 |[0;0m                 switch result {
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:64:42: error: actor-isolated property 'queue' cannot be accessed from outside of the actor
- 62 |         Task { @MainActor in
- 63 |             if let appState = try? await getAppState() {
- 64 |                 appState.updateQueueSize(queue.count)
-    |                                          `- error: actor-isolated property 'queue' cannot be accessed from outside of the actor
- 65 |             }
- 66 |         }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:357:49: [1;31merror: [1;39mactor-isolated instance method 'addRequest(account:uid:priority:completion:)' cannot be called from outside of the actor[0;0m
+[0;36m355 |[0;0m     
+[0;36m356 |[0;0m     private func processUID(_ uid: String, for account: TelegramAccount) async {
+[0;36m357 |[0;0m         let taskId = [4;39mRequestQueueManager.shared.addRequest(account: account, uid: uid) { result in[0;0m
+    [0;36m|[0;0m                                                 `- [1;31merror: [1;39mactor-isolated instance method 'addRequest(account:uid:priority:completion:)' cannot be called from outside of the actor[0;0m
+[0;36m358 |[0;0m             Task { @MainActor in
+[0;36m359 |[0;0m                 switch result {
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:71:31: error: cannot find 'NSApplication' in scope
- 69 |     private func getAppState() async throws -> AppState? {
- 70 |         await MainActor.run {
- 71 |             guard let scene = NSApplication.shared.orderedWindows.first?.windowScene,
-    |                               `- error: cannot find 'NSApplication' in scope
- 72 |                   let delegate = scene.delegate as? NSWindowSceneDelegate,
- 73 |                   let window = delegate.window as? NSWindow,
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:116:28: error: generic parameter 'Success' could not be inferred
-114 |         
-115 |         await handleTaskResult(task: task, result: result)
-116 |         activeTasks.remove(Task.current)
-    |                            `- error: generic parameter 'Success' could not be inferred
-117 |         
-118 |         Task {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:116:28: error: generic parameter 'Failure' could not be inferred
-114 |         
-115 |         await handleTaskResult(task: task, result: result)
-116 |         activeTasks.remove(Task.current)
-    |                            |- error: generic parameter 'Failure' could not be inferred
-    |                            `- note: explicitly specify the generic arguments to fix this issue
-117 |         
-118 |         Task {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:116:33: error: type 'Task<Success, Failure>' has no member 'current'
-114 |         
-115 |         await handleTaskResult(task: task, result: result)
-116 |         activeTasks.remove(Task.current)
-    |                                 `- error: type 'Task<Success, Failure>' has no member 'current'
-117 |         
-118 |         Task {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:115:9: warning: no 'async' operations occur within 'await' expression
-113 |         }
-114 |         
-115 |         await handleTaskResult(task: task, result: result)
-    |         `- warning: no 'async' operations occur within 'await' expression
-116 |         activeTasks.remove(Task.current)
-117 |         
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:119:13: warning: no 'async' operations occur within 'await' expression
-117 |         
-118 |         Task {
-119 |             await updateQueueStatus()
-    |             `- warning: no 'async' operations occur within 'await' expression
-120 |             await startProcessingIfNeeded()
-121 |         }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:120:13: warning: no 'async' operations occur within 'await' expression
-118 |         Task {
-119 |             await updateQueueStatus()
-120 |             await startProcessingIfNeeded()
-    |             `- warning: no 'async' operations occur within 'await' expression
-121 |         }
-122 |     }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:273:18: error: main actor-isolated property 'isPersistentRunning' can not be mutated from a Sendable closure
- 10 |     private var inputPipe: Pipe?
- 11 |     private var outputPipe: Pipe?
- 12 |     private var isPersistentRunning = false
-    |                 `- note: mutation of this property is only permitted within the actor
- 13 |     
- 14 |     private init() {
-    :
-271 |         
-272 |         process.terminationHandler = { _ in
-273 |             self.isPersistentRunning = false
-    |                  `- error: main actor-isolated property 'isPersistentRunning' can not be mutated from a Sendable closure
-274 |             print("Persistent process terminated")
-275 |         }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:398:19: error: type 'T' does not conform to the 'Sendable' protocol
-395 |     }
-396 |     
-397 |     private func withTimeout<T>(seconds: TimeInterval, operation: @escaping () async throws -> T) async throws -> T {
-    |                              `- note: consider making generic parameter 'T' conform to the 'Sendable' protocol
-398 |         try await withThrowingTaskGroup(of: T.self) { group in
-    |                   `- error: type 'T' does not conform to the 'Sendable' protocol
-399 |             group.addTask {
-400 |                 return try await operation()
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:399:19: error: type 'T' does not conform to the 'Sendable' protocol
-395 |     }
-396 |     
-397 |     private func withTimeout<T>(seconds: TimeInterval, operation: @escaping () async throws -> T) async throws -> T {
-    |                              `- note: consider making generic parameter 'T' conform to the 'Sendable' protocol
-398 |         try await withThrowingTaskGroup(of: T.self) { group in
-399 |             group.addTask {
-    |                   `- error: type 'T' does not conform to the 'Sendable' protocol
-400 |                 return try await operation()
-401 |             }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:403:19: error: type 'T' does not conform to the 'Sendable' protocol
-395 |     }
-396 |     
-397 |     private func withTimeout<T>(seconds: TimeInterval, operation: @escaping () async throws -> T) async throws -> T {
-    |                              `- note: consider making generic parameter 'T' conform to the 'Sendable' protocol
-398 |         try await withThrowingTaskGroup(of: T.self) { group in
-399 |             group.addTask {
-    :
-401 |             }
-402 |             
-403 |             group.addTask {
-    |                   `- error: type 'T' does not conform to the 'Sendable' protocol
-404 |                 try await Task.sleep(nanoseconds: UInt64(seconds * 1_000_000_000))
-405 |                 throw NSError(domain: "TelegramService", code: 408, 
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:409:42: error: type 'T' does not conform to the 'Sendable' protocol
-395 |     }
-396 |     
-397 |     private func withTimeout<T>(seconds: TimeInterval, operation: @escaping () async throws -> T) async throws -> T {
-    |                              `- note: consider making generic parameter 'T' conform to the 'Sendable' protocol
-398 |         try await withThrowingTaskGroup(of: T.self) { group in
-399 |             group.addTask {
-    :
-407 |             }
-408 |             
-409 |             let result = try await group.next()!
-    |                                          `- error: type 'T' does not conform to the 'Sendable' protocol
-410 |             group.cancelAll()
-411 |             return result
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:410:19: error: type 'T' does not conform to the 'Sendable' protocol
-395 |     }
-396 |     
-397 |     private func withTimeout<T>(seconds: TimeInterval, operation: @escaping () async throws -> T) async throws -> T {
-    |                              `- note: consider making generic parameter 'T' conform to the 'Sendable' protocol
-398 |         try await withThrowingTaskGroup(of: T.self) { group in
-399 |             group.addTask {
-    :
-408 |             
-409 |             let result = try await group.next()!
-410 |             group.cancelAll()
-    |                   `- error: type 'T' does not conform to the 'Sendable' protocol
-411 |             return result
-412 |         }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:416:9: error: call to main actor-isolated instance method 'stopPersistentProcess()' in a synchronous nonisolated context [#ActorIsolatedCall]
-290 |     }
-291 |     
-292 |     private func stopPersistentProcess() {
-    |                  `- note: calls to instance method 'stopPersistentProcess()' from outside of its actor context are implicitly asynchronous
-293 |         persistentProcess?.terminate()
-294 |         persistentProcess = nil
-    :
-414 |     
-415 |     deinit {
-416 |         stopPersistentProcess()
-    |         `- error: call to main actor-isolated instance method 'stopPersistentProcess()' in a synchronous nonisolated context [#ActorIsolatedCall]
-417 |     }
-418 | }
-
-[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
-error: emit-module command failed with exit code 1 (use -v to see invocation)
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/NotificationService.swift:5:16: error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationService' may have shared mutable state [#MutableGlobalVariable]
- 2 | import UserNotifications
- 3 | 
- 4 | class NotificationService {
-   |       `- note: class 'NotificationService' does not conform to the 'Sendable' protocol
- 5 |     static let shared = NotificationService()
-   |                |- error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationService' may have shared mutable state [#MutableGlobalVariable]
-   |                |- note: add '@MainActor' to make static property 'shared' part of global actor 'MainActor'
-   |                `- note: disable concurrency-safety checks if accesses are protected by an external synchronization mechanism
- 6 |     
- 7 |     private var lastNotificationTime: Date = .distantPast
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SecurityManager.swift:5:16: error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'SecurityManager' may have shared mutable state [#MutableGlobalVariable]
- 2 | import KeychainAccess
- 3 | 
- 4 | class SecurityManager {
-   |       `- note: class 'SecurityManager' does not conform to the 'Sendable' protocol
- 5 |     static let shared = SecurityManager()
-   |                |- error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'SecurityManager' may have shared mutable state [#MutableGlobalVariable]
-   |                |- note: add '@MainActor' to make static property 'shared' part of global actor 'MainActor'
-   |                `- note: disable concurrency-safety checks if accesses are protected by an external synchronization mechanism
- 6 |     private let keychain = Keychain(service: "com.telegram.uids.scanner")
- 7 |     
-
-[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/NotificationService.swift:5:16: error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationService' may have shared mutable state [#MutableGlobalVariable]
- 2 | import UserNotifications
- 3 | 
- 4 | class NotificationService {
-   |       `- note: class 'NotificationService' does not conform to the 'Sendable' protocol
- 5 |     static let shared = NotificationService()
-   |                |- error: static property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationService' may have shared mutable state [#MutableGlobalVariable]
-   |                |- note: add '@MainActor' to make static property 'shared' part of global actor 'MainActor'
-   |                `- note: disable concurrency-safety checks if accesses are protected by an external synchronization mechanism
- 6 |     
- 7 |     private var lastNotificationTime: Date = .distantPast
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/NotificationService.swift:40:17: warning: capture of 'self' with non-Sendable type 'NotificationService' in a '@Sendable' closure [#SendableClosureCaptures]
- 2 | import UserNotifications
- 3 | 
- 4 | class NotificationService {
-   |       `- note: class 'NotificationService' does not conform to the 'Sendable' protocol
- 5 |     static let shared = NotificationService()
- 6 |     
-   :
-38 |                 print("Error adding notification: \(error)")
-39 |             } else {
-40 |                 self.lastNotificationTime = now
-   |                 `- warning: capture of 'self' with non-Sendable type 'NotificationService' in a '@Sendable' closure [#SendableClosureCaptures]
-41 |             }
-42 |         }
-
-[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
-[#SendableClosureCaptures]: <https://docs.swift.org/compiler/documentation/diagnostics/sendable-closure-captures>
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:357:13: warning: initialization of immutable value 'taskId' was never used; consider replacing with assignment to '_' or removing it [#no-usage]
-355 |     
-356 |     private func processUID(_ uid: String, for account: TelegramAccount) async {
-357 |         let taskId = RequestQueueManager.shared.addRequest(account: account, uid: uid) { result in
-    |             `- warning: initialization of immutable value 'taskId' was never used; consider replacing with assignment to '_' or removing it [#no-usage]
-358 |             Task { @MainActor in
-359 |                 switch result {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:357:49: error: actor-isolated instance method 'addRequest(account:uid:priority:completion:)' cannot be called from outside of the actor
-355 |     
-356 |     private func processUID(_ uid: String, for account: TelegramAccount) async {
-357 |         let taskId = RequestQueueManager.shared.addRequest(account: account, uid: uid) { result in
-    |                                                 `- error: actor-isolated instance method 'addRequest(account:uid:priority:completion:)' cannot be called from outside of the actor
-358 |             Task { @MainActor in
-359 |                 switch result {
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:389:59: error: value of type 'TelegramService' has no member 'sendToSavedMessages'
-387 |                     let message = "💰 Найден депозит:\nUID: \(uid)\nСумма: $\(result.depositAmount)\nАккаунт: \(account.name)"
-388 |                     Task {
-389 |                         try? await TelegramService.shared.sendToSavedMessages(account: account, message: message)
-    |                                                           `- error: value of type 'TelegramService' has no member 'sendToSavedMessages'
-390 |                         appState.addLog("💾 Сохранено для Эвелин", type: .success)
-391 |                     }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:619:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
-617 |                     .padding(.vertical, 4)
-618 |                 }
-619 |                 .onChange(of: appState.logs.count) { _ in
-    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
-620 |                     if let lastId = appState.logs.first?.id {
-621 |                         withAnimation {
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:619:18: [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m617 |[0;0m                     .padding(.vertical, 4)
+[0;36m618 |[0;0m                 }
+[0;36m619 |[0;0m                 .onChange(of: appState.logs.count) { _ in
+    [0;36m|[0;0m                  `- [1;33mwarning: [1;39m'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead.[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration\DeprecatedDeclaration]8;;\]
+[0;36m620 |[0;0m                     if let lastId = appState.logs.first?.id {
+[0;36m621 |[0;0m                         withAnimation {
 
 [#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
-
-(venv) mk@mav TelegramUIDScanner % 
