@@ -1,193 +1,142 @@
 Building for debugging...
-[0/3] Write swift-version--1AB21518FC5DEDBE.txt
-error: emit-module command failed with exit code 1 (use -v to see invocation)
+[0/4] Write swift-version--1AB21518FC5DEDBE.txt
 [2/7] Emitting module TelegramUIDScanner
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:136:16: [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
-[0;36m133 |[0;0m 
-[0;36m134 |[0;0m // Дополнительный сервис для уведомлений только Эвелин
-[0;36m135 |[0;0m class NotificationManager {
-    [0;36m|[0;0m       `- [1;39mnote: [1;39mclass 'NotificationManager' does not conform to the 'Sendable' protocol[0;0m
-[0;36m136 |[0;0m     static let shared = NotificationManager()
-    [0;36m|[0;0m                |- [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
-    [0;36m|[0;0m                |- [1;39mnote: [1;39madd '@MainActor' to make static property 'shared' part of global actor 'MainActor'[0;0m
-    [0;36m|[0;0m                `- [1;39mnote: [1;39mdisable concurrency-safety checks if accesses are protected by an external synchronization mechanism[0;0m
-[0;36m137 |[0;0m     
-[0;36m138 |[0;0m     private var sentNotifications: Set<String> = []
-
-[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
-[3/7] Compiling TelegramUIDScanner TelegramService.swift
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:29:49: [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
- [0;36m27 |[0;0m     
- [0;36m28 |[0;0m     private func setupRequestManager() {
- [0;36m29 |[0;0m         requestManager.onRequestStart = { [weak self] account, uid in
-    [0;36m|[0;0m                                                 `- [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
- [0;36m30 |[0;0m             print("🚀 Начинаем запрос UID: \(uid) через \(account.name)")
- [0;36m31 |[0;0m         }
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:33:52: [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
- [0;36m31 |[0;0m         }
- [0;36m32 |[0;0m         
- [0;36m33 |[0;0m         requestManager.onRequestComplete = { [weak self] account, uid, success, response in
-    [0;36m|[0;0m                                                    `- [1;33mwarning: [1;39mvariable 'self' was written to, but never read[0;0m
- [0;36m34 |[0;0m             if success {
- [0;36m35 |[0;0m                 print("✅ Запрос \(uid) выполнен")
-
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:29:24: [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be mutated from the main actor[0;0m
- [0;36m27 |[0;0m     
- [0;36m28 |[0;0m     private func setupRequestManager() {
- [0;36m29 |[0;0m         requestManager.onRequestStart = { [weak self] account, uid in
-    [0;36m|[0;0m                        `- [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be mutated from the main actor[0;0m
- [0;36m30 |[0;0m             print("🚀 Начинаем запрос UID: \(uid) через \(account.name)")
- [0;36m31 |[0;0m         }
+[3/7] Compiling TelegramUIDScanner MonitoringService.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:240:9: [1;31merror: [1;39mcall to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+ [0;36m49 |[0;0m     }
+ [0;36m50 |[0;0m     
+ [0;36m51 |[0;0m     func stopMonitoring() {
+    [0;36m|[0;0m          `- [1;39mnote: [1;39mcalls to instance method 'stopMonitoring()' from outside of its actor context are implicitly asynchronous[0;0m
+ [0;36m52 |[0;0m         isMonitoring = false
+ [0;36m53 |[0;0m         monitoringTask?.cancel()
     [0;36m:[0;0m
-[0;36m348 |[0;0m     private var outputPipe: Pipe?
-[0;36m349 |[0;0m     
-[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
-    [0;36m|[0;0m         `- [1;39mnote: [1;39mmutation of this property is only permitted within the actor[0;0m
-[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
-[0;36m352 |[0;0m     
+[0;36m238 |[0;0m     
+[0;36m239 |[0;0m     deinit {
+[0;36m240 |[0;0m         stopMonitoring()
+    [0;36m|[0;0m         `- [1;31merror: [1;39mcall to main actor-isolated instance method 'stopMonitoring()' in a synchronous nonisolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+[0;36m241 |[0;0m     }
+[0;36m242 |[0;0m }
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:33:24: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be mutated from the main actor[0;0m
- [0;36m31 |[0;0m         }
- [0;36m32 |[0;0m         
- [0;36m33 |[0;0m         requestManager.onRequestComplete = { [weak self] account, uid, success, response in
-    [0;36m|[0;0m                        `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be mutated from the main actor[0;0m
- [0;36m34 |[0;0m             if success {
- [0;36m35 |[0;0m                 print("✅ Запрос \(uid) выполнен")
-    [0;36m:[0;0m
-[0;36m349 |[0;0m     
-[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
-[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
-    [0;36m|[0;0m         `- [1;39mnote: [1;39mmutation of this property is only permitted within the actor[0;0m
-[0;36m352 |[0;0m     
-[0;36m353 |[0;0m     private func ensureProcess() throws {
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+[4/7] Compiling TelegramUIDScanner ParallelProcessor.swift
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:66:40: [1;31merror: [1;39mcall to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+ [0;36m64 |[0;0m         
+ [0;36m65 |[0;0m         if account.isEvelyn {
+ [0;36m66 |[0;0m             NotificationManager.shared.sendEvelynNotification(
+    [0;36m|[0;0m                                        `- [1;31merror: [1;39mcall to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+ [0;36m67 |[0;0m                 "📥 Многопоточная обработка\nДобавлено: \(uids.count) UID\nМакс. потоков: \(maxConcurrentThreads)",
+ [0;36m68 |[0;0m                 type: .info
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:389:26: [1;31merror: [1;39mtype 'Any' does not conform to the 'Sendable' protocol[0;0m
-[0;36m387 |[0;0m         }
-[0;36m388 |[0;0m         
-[0;36m389 |[0;0m         return try await withTimeout(seconds: 40) {
-    [0;36m|[0;0m                          `- [1;31merror: [1;39mtype 'Any' does not conform to the 'Sendable' protocol[0;0m
-[0;36m390 |[0;0m             inputPipe.fileHandleForWriting.write((jsonString + "\n").data(using: .utf8) ?? Data())
-[0;36m391 |[0;0m             
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:144:10: [1;39mnote: [1;39mcalls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous[0;0m
+[0;36m142 |[0;0m     private let notificationCooldown: TimeInterval = 300 // 5 минут
+[0;36m143 |[0;0m     
+[0;36m144 |[0;0m     func sendEvelynNotification(_ message: String, type: NotificationType = .info) {
+    [0;36m|[0;0m          `- [1;39mnote: [1;39mcalls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous[0;0m
+[0;36m145 |[0;0m         // Проверяем, не отправляли ли мы уже такое уведомление
+[0;36m146 |[0;0m         let notificationHash = "\(message.hashValue)"
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:427:13: [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be referenced from the main actor[0;0m
-[0;36m348 |[0;0m     private var outputPipe: Pipe?
-[0;36m349 |[0;0m     
-[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
-    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
-[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
-[0;36m352 |[0;0m     
-    [0;36m:[0;0m
-[0;36m425 |[0;0m     func sendRequest(account: TelegramAccount, uid: String) async throws -> String {
-[0;36m426 |[0;0m         await MainActor.run {
-[0;36m427 |[0;0m             onRequestStart?(account, uid)
-    [0;36m|[0;0m             `- [1;31merror: [1;39mactor-isolated property 'onRequestStart' can not be referenced from the main actor[0;0m
-[0;36m428 |[0;0m         }
-[0;36m429 |[0;0m         
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:66:33: [1;31merror: [1;39mmain actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance[0;0m
+ [0;36m64 |[0;0m         
+ [0;36m65 |[0;0m         if account.isEvelyn {
+ [0;36m66 |[0;0m             NotificationManager.shared.sendEvelynNotification(
+    [0;36m|[0;0m                                 `- [1;31merror: [1;39mmain actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance[0;0m
+ [0;36m67 |[0;0m                 "📥 Многопоточная обработка\nДобавлено: \(uids.count) UID\nМакс. потоков: \(maxConcurrentThreads)",
+ [0;36m68 |[0;0m                 type: .info
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:448:29: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
-[0;36m349 |[0;0m     
-[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
-[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
-    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
-[0;36m352 |[0;0m     
-[0;36m353 |[0;0m     private func ensureProcess() throws {
-    [0;36m:[0;0m
-[0;36m446 |[0;0m                     if let responseText = response["response"] as? String {
-[0;36m447 |[0;0m                         await MainActor.run {
-[0;36m448 |[0;0m                             onRequestComplete?(account, uid, true, responseText)
-    [0;36m|[0;0m                             `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
-[0;36m449 |[0;0m                         }
-[0;36m450 |[0;0m                         return responseText
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:139:16: [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m137 |[0;0m @MainActor
+[0;36m138 |[0;0m class NotificationManager {
+[0;36m139 |[0;0m     static let shared = NotificationManager()
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m140 |[0;0m     
+[0;36m141 |[0;0m     private var sentNotifications: Set<String> = []
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:472:17: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
-[0;36m349 |[0;0m     
-[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
-[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
-    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
-[0;36m352 |[0;0m     
-[0;36m353 |[0;0m     private func ensureProcess() throws {
-    [0;36m:[0;0m
-[0;36m470 |[0;0m             let errorMessage = response["message"] as? String ?? "Unknown error"
-[0;36m471 |[0;0m             await MainActor.run {
-[0;36m472 |[0;0m                 onRequestComplete?(account, uid, false, errorMessage)
-    [0;36m|[0;0m                 `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
-[0;36m473 |[0;0m             }
-[0;36m474 |[0;0m             throw NSError(domain: "RequestManager", code: 5, 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:175:27: [1;33mwarning: [1;39mresult of call to 'addJob(account:uid:priority:)' is unused[0;0m [#no-usage]
+[0;36m173 |[0;0m                     // Ждем и добавляем снова
+[0;36m174 |[0;0m                     try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 сек
+[0;36m175 |[0;0m                     await addJob(account: job.account, uid: job.uid, priority: job.priority + 1)
+    [0;36m|[0;0m                           `- [1;33mwarning: [1;39mresult of call to 'addJob(account:uid:priority:)' is unused[0;0m [#no-usage]
+[0;36m176 |[0;0m                     
+[0;36m177 |[0;0m                 } else {
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/TelegramService.swift:479:17: [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
-[0;36m349 |[0;0m     
-[0;36m350 |[0;0m     var onRequestStart: ((TelegramAccount, String) -> Void)?
-[0;36m351 |[0;0m     var onRequestComplete: ((TelegramAccount, String, Bool, String) -> Void)?
-    [0;36m|[0;0m         `- [1;39mnote: [1;39mproperty declared here[0;0m
-[0;36m352 |[0;0m     
-[0;36m353 |[0;0m     private func ensureProcess() throws {
-    [0;36m:[0;0m
-[0;36m477 |[0;0m         } catch {
-[0;36m478 |[0;0m             await MainActor.run {
-[0;36m479 |[0;0m                 onRequestComplete?(account, uid, false, error.localizedDescription)
-    [0;36m|[0;0m                 `- [1;31merror: [1;39mactor-isolated property 'onRequestComplete' can not be referenced from the main actor[0;0m
-[0;36m480 |[0;0m             }
-[0;36m481 |[0;0m             throw error
-[4/7] Compiling TelegramUIDScanner ContentView.swift
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:13:13: [1;31merror: [1;39mcannot find 'SidebarView' in scope[0;0m
-  [0;36m11 |[0;0m     var body: some View {
-  [0;36m12 |[0;0m         NavigationSplitView {
-  [0;36m13 |[0;0m             [4;39mSidebarView[0;0m(selectedAccount: $selectedAccount)
-     [0;36m|[0;0m             `- [1;31merror: [1;39mcannot find 'SidebarView' in scope[0;0m
-  [0;36m14 |[0;0m                 .navigationSplitViewColumnWidth(min: 250, ideal: 280, max: 350)
-  [0;36m15 |[0;0m         } detail: {
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:175:21: [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
+[0;36m173 |[0;0m                     // Ждем и добавляем снова
+[0;36m174 |[0;0m                     try? await Task.sleep(nanoseconds: 2_000_000_000) // 2 сек
+[0;36m175 |[0;0m                     await addJob(account: job.account, uid: job.uid, priority: job.priority + 1)
+    [0;36m|[0;0m                     `- [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
+[0;36m176 |[0;0m                     
+[0;36m177 |[0;0m                 } else {
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:191:21: [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
- [0;36m189 |[0;0m             Form {
- [0;36m190 |[0;0m                 Section("Общая статистика") {
- [0;36m191 |[0;0m                     [4;39mStatRow[0;0m(title: "Обработано UID:", value: "\(appState.totalProcessed)")
-     [0;36m|[0;0m                     `- [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
- [0;36m192 |[0;0m                     StatRow(title: "Найдено депозитов:", value: "\(appState.totalFound)")
- [0;36m193 |[0;0m                     StatRow(title: "Успешных запросов:", 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:197:36: [1;31merror: [1;39mcall to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+[0;36m195 |[0;0m         print("⏸️ Многопоточная обработка приостановлена")
+[0;36m196 |[0;0m         
+[0;36m197 |[0;0m         NotificationManager.shared.sendEvelynNotification(
+    [0;36m|[0;0m                                    `- [1;31merror: [1;39mcall to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+[0;36m198 |[0;0m             "⏸️ МНОГОПОТОЧНАЯ ОБРАБОТКА ПРИОСТАНОВЛЕНА\nАктивных задач: \(queue.filter { $0.status == .processing }.count)",
+[0;36m199 |[0;0m             type: .warning
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:192:21: [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
- [0;36m190 |[0;0m                 Section("Общая статистика") {
- [0;36m191 |[0;0m                     StatRow(title: "Обработано UID:", value: "\(appState.totalProcessed)")
- [0;36m192 |[0;0m                     [4;39mStatRow[0;0m(title: "Найдено депозитов:", value: "\(appState.totalFound)")
-     [0;36m|[0;0m                     `- [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
- [0;36m193 |[0;0m                     StatRow(title: "Успешных запросов:", 
- [0;36m194 |[0;0m                            value: "\(appState.totalProcessed > 0 ? String(format: "%.1f%%", Double(appState.totalFound) / Double(appState.totalProcessed) * 100) : "0%")",
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:144:10: [1;39mnote: [1;39mcalls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous[0;0m
+[0;36m142 |[0;0m     private let notificationCooldown: TimeInterval = 300 // 5 минут
+[0;36m143 |[0;0m     
+[0;36m144 |[0;0m     func sendEvelynNotification(_ message: String, type: NotificationType = .info) {
+    [0;36m|[0;0m          `- [1;39mnote: [1;39mcalls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous[0;0m
+[0;36m145 |[0;0m         // Проверяем, не отправляли ли мы уже такое уведомление
+[0;36m146 |[0;0m         let notificationHash = "\(message.hashValue)"
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/ContentView.swift:193:21: [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
- [0;36m191 |[0;0m                     StatRow(title: "Обработано UID:", value: "\(appState.totalProcessed)")
- [0;36m192 |[0;0m                     StatRow(title: "Найдено депозитов:", value: "\(appState.totalFound)")
- [0;36m193 |[0;0m                     [4;39mStatRow[0;0m(title: "Успешных запросов:", 
-     [0;36m|[0;0m                     `- [1;31merror: [1;39mcannot find 'StatRow' in scope[0;0m
- [0;36m194 |[0;0m                            value: "\(appState.totalProcessed > 0 ? String(format: "%.1f%%", Double(appState.totalFound) / Double(appState.totalProcessed) * 100) : "0%")",
- [0;36m195 |[0;0m                            color: .green)
-[5/7] Compiling TelegramUIDScanner QueueManager.swift
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:136:16: [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
-[0;36m133 |[0;0m 
-[0;36m134 |[0;0m // Дополнительный сервис для уведомлений только Эвелин
-[0;36m135 |[0;0m class NotificationManager {
-    [0;36m|[0;0m       `- [1;39mnote: [1;39mclass 'NotificationManager' does not conform to the 'Sendable' protocol[0;0m
-[0;36m136 |[0;0m     static let shared = NotificationManager()
-    [0;36m|[0;0m                |- [1;31merror: [1;39mstatic property 'shared' is not concurrency-safe because non-'Sendable' type 'NotificationManager' may have shared mutable state[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable\MutableGlobalVariable]8;;\]
-    [0;36m|[0;0m                |- [1;39mnote: [1;39madd '@MainActor' to make static property 'shared' part of global actor 'MainActor'[0;0m
-    [0;36m|[0;0m                `- [1;39mnote: [1;39mdisable concurrency-safety checks if accesses are protected by an external synchronization mechanism[0;0m
-[0;36m137 |[0;0m     
-[0;36m138 |[0;0m     private var sentNotifications: Set<String> = []
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:197:29: [1;31merror: [1;39mmain actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance[0;0m
+[0;36m195 |[0;0m         print("⏸️ Многопоточная обработка приостановлена")
+[0;36m196 |[0;0m         
+[0;36m197 |[0;0m         NotificationManager.shared.sendEvelynNotification(
+    [0;36m|[0;0m                             `- [1;31merror: [1;39mmain actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance[0;0m
+[0;36m198 |[0;0m             "⏸️ МНОГОПОТОЧНАЯ ОБРАБОТКА ПРИОСТАНОВЛЕНА\nАктивных задач: \(queue.filter { $0.status == .processing }.count)",
+[0;36m199 |[0;0m             type: .warning
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:75:13: [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
- [0;36m73 |[0;0m             accountStats[account.id] = stats
- [0;36m74 |[0;0m             
- [0;36m75 |[0;0m             await completion(.success(response))
-    [0;36m|[0;0m             `- [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
- [0;36m76 |[0;0m             
- [0;36m77 |[0;0m         } catch {
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:139:16: [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m137 |[0;0m @MainActor
+[0;36m138 |[0;0m class NotificationManager {
+[0;36m139 |[0;0m     static let shared = NotificationManager()
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m140 |[0;0m     
+[0;36m141 |[0;0m     private var sentNotifications: Set<String> = []
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:104:13: [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
-[0;36m102 |[0;0m             accountStats[account.id] = stats
-[0;36m103 |[0;0m             
-[0;36m104 |[0;0m             await completion(.failure(error))
-    [0;36m|[0;0m             `- [1;33mwarning: [1;39mno 'async' operations occur within 'await' expression[0;0m
-[0;36m105 |[0;0m         }
-[0;36m106 |[0;0m         
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:224:36: [1;31merror: [1;39mcall to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+[0;36m222 |[0;0m         print("🧹 Очередь очищена")
+[0;36m223 |[0;0m         
+[0;36m224 |[0;0m         NotificationManager.shared.sendEvelynNotification(
+    [0;36m|[0;0m                                    `- [1;31merror: [1;39mcall to main actor-isolated instance method 'sendEvelynNotification(_:type:)' in a synchronous actor-isolated context[0;0m [#]8;;https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call\ActorIsolatedCall]8;;\]
+[0;36m225 |[0;0m             "🧹 ОЧЕРЕДЬ ОЧИЩЕНА\nВсе задачи отменены",
+[0;36m226 |[0;0m             type: .info
 
-[#MutableGlobalVariable]: <https://docs.swift.org/compiler/documentation/diagnostics/mutable-global-variable>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:144:10: [1;39mnote: [1;39mcalls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous[0;0m
+[0;36m142 |[0;0m     private let notificationCooldown: TimeInterval = 300 // 5 минут
+[0;36m143 |[0;0m     
+[0;36m144 |[0;0m     func sendEvelynNotification(_ message: String, type: NotificationType = .info) {
+    [0;36m|[0;0m          `- [1;39mnote: [1;39mcalls to instance method 'sendEvelynNotification(_:type:)' from outside of its actor context are implicitly asynchronous[0;0m
+[0;36m145 |[0;0m         // Проверяем, не отправляли ли мы уже такое уведомление
+[0;36m146 |[0;0m         let notificationHash = "\(message.hashValue)"
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:224:29: [1;31merror: [1;39mmain actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance[0;0m
+[0;36m222 |[0;0m         print("🧹 Очередь очищена")
+[0;36m223 |[0;0m         
+[0;36m224 |[0;0m         NotificationManager.shared.sendEvelynNotification(
+    [0;36m|[0;0m                             `- [1;31merror: [1;39mmain actor-isolated static property 'shared' can not be referenced on a nonisolated actor instance[0;0m
+[0;36m225 |[0;0m             "🧹 ОЧЕРЕДЬ ОЧИЩЕНА\nВсе задачи отменены",
+[0;36m226 |[0;0m             type: .info
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/QueueManager.swift:139:16: [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m137 |[0;0m @MainActor
+[0;36m138 |[0;0m class NotificationManager {
+[0;36m139 |[0;0m     static let shared = NotificationManager()
+    [0;36m|[0;0m                `- [1;39mnote: [1;39mstatic property declared here[0;0m
+[0;36m140 |[0;0m     
+[0;36m141 |[0;0m     private var sentNotifications: Set<String> = []
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/ParallelProcessor.swift:297:56: [1;31merror: [1;39mcannot convert value of type 'Double' to expected argument type 'Int'[0;0m
+[0;36m295 |[0;0m         }
+[0;36m296 |[0;0m         
+[0;36m297 |[0;0m         if speedStats.failed > speedStats.successful * 0.3 {
+    [0;36m|[0;0m                                                        `- [1;31merror: [1;39mcannot convert value of type 'Double' to expected argument type 'Int'[0;0m
+[0;36m298 |[0;0m             recommendations.append("• Много ошибок - проверьте аккаунты")
+[0;36m299 |[0;0m         }
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
