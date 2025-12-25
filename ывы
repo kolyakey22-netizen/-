@@ -1,16 +1,194 @@
-mk@mav TelegramUIDScanner % cd ~/TelegramUIDScanner
-swift build
+mk@mav ~ % cd ~/TelegramUIDScanner
+
+mk@mav TelegramUIDScanner % >....                                               
+// Простой сервис мониторинга
+@MainActor
+class MonitoringService {
+    static let shared = MonitoringService()
+
+    var systemMetrics: SystemMetrics {
+        let processInfo = ProcessInfo.processInfo
+        return SystemMetrics(
+            memoryUsage: processInfo.physicalMemory,
+            cpuCount: processInfo.processorCount,
+            systemUptime: processInfo.systemUptime,
+            activeProcessors: processInfo.activeProcessorCount
+        )
+    }
+
+    struct SystemMetrics {
+        let memoryUsage: UInt64
+        let cpuCount: Int
+        let systemUptime: TimeInterval
+        let activeProcessors: Int
+    }
+}
+EOF
+mk@mav TelegramUIDScanner % swift build
+
 [1/1] Planning build
 Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/LogView.swift:41:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
- 39 |                     .padding(.vertical, 4)
- 40 |                 }
- 41 |                 .onChange(of: appState.logs.count) { _ in
-    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
- 42 |                     if let lastId = appState.logs.first?.id {
- 43 |                         withAnimation {
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:6:25: error: ambiguous use of 'init()'
+  3 | 
+  4 | @MainActor
+  5 | class MonitoringService: ObservableObject {
+    |       `- note: found this candidate 
+  6 |     static let shared = MonitoringService()
+    |                         `- error: ambiguous use of 'init()'
+  7 |     
+  8 |     @Published var systemMetrics = SystemMetrics()
 
-[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
-[18/18] Applying TelegramUIDScanner
-Build complete! (2.45s)
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:325:7: note: found this candidate 
+323 | // Простой сервис мониторинга
+324 | @MainActor
+325 | class MonitoringService {
+    |       `- note: found this candidate 
+326 |     static let shared = MonitoringService()
+327 |     
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:5:7: error: invalid redeclaration of 'MonitoringService'
+  3 | 
+  4 | @MainActor
+  5 | class MonitoringService: ObservableObject {
+    |       `- error: invalid redeclaration of 'MonitoringService'
+  6 |     static let shared = MonitoringService()
+  7 |     
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:326:25: error: ambiguous use of 'init()'
+323 | // Простой сервис мониторинга
+324 | @MainActor
+325 | class MonitoringService {
+    |       `- note: found this candidate 
+326 |     static let shared = MonitoringService()
+    |                         `- error: ambiguous use of 'init()'
+327 |     
+328 |     var systemMetrics: SystemMetrics {
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/MonitoringService.swift:5:7: note: found this candidate 
+  3 | 
+  4 | @MainActor
+  5 | class MonitoringService: ObservableObject {
+    |       `- note: found this candidate 
+  6 |     static let shared = MonitoringService()
+  7 |     
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:325:7: error: invalid redeclaration of 'MonitoringService'
+323 | // Простой сервис мониторинга
+324 | @MainActor
+325 | class MonitoringService {
+    |       `- error: invalid redeclaration of 'MonitoringService'
+326 |     static let shared = MonitoringService()
+327 |     
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:211:17: warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+209 |         let now = Date()
+210 |         
+211 |         for var task in scheduledTasks where task.isActive {
+    |                 `- warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+212 |             guard let nextRun = task.nextRun else { continue }
+213 |             
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:317:14: error: capture of 'self' in a closure that outlives deinit
+315 |     
+316 |     deinit {
+317 |         Task { @MainActor in
+    |              `- error: capture of 'self' in a closure that outlives deinit
+318 |             stopScheduler()
+319 |         }
+[4/7] Compiling TelegramUIDScanner SchedulerService.swift
 mk@mav TelegramUIDScanner % 
