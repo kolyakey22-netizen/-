@@ -1,44 +1,143 @@
+
+EOF
 mk@mav TelegramUIDScanner % echo "🔄 Запускаю сборку проекта..."
 swift build
-🔄 Запускаю сборку проекта...
+
+if [ $? -eq 0 ]; then
+    echo ""
+    echo "✅ СБОРКА УСПЕШНА!"
+    echo "Теперь запускай приложение:"
+    echo "swift run"
+else
+    echo ""
+    echo "❌ Есть ошибки сборки. Смотри вывод выше."
+fi
+then dquote> 
+mk@mav TelegramUIDScanner % сswift build
+
+zsh: command not found: сswift
+mk@mav TelegramUIDScanner % swift build
+
 Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:90:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
- 88 |             monitoringEnabled = true
- 89 |             Task {
- 90 |                 await MonitoringService.shared.startMonitoring()
-    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
- 91 |             }
- 92 |         }
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:101:44: error: value of type 'MonitoringService' has no member 'stopMonitoring'
- 99 |         monitoringEnabled = false
-100 |         Task {
-101 |             await MonitoringService.shared.stopMonitoring()
-    |                                            `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
-102 |         }
-103 |     }
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:180:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
-178 |         if monitoringEnabled {
-179 |             Task {
-180 |                 await MonitoringService.shared.startMonitoring()
-    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
-181 |                 addLog("📊 Мониторинг включен", type: .info)
-182 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
 
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:185:48: error: value of type 'MonitoringService' has no member 'stopMonitoring'
-183 |         } else {
-184 |             Task {
-185 |                 await MonitoringService.shared.stopMonitoring()
-    |                                                `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
-186 |                 addLog("📊 Мониторинг выключен", type: .info)
-187 |             }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:365:27: error: capture of 'self' in a closure that outlives deinit
-363 |     
-364 |     deinit {
-365 |         deinitTask = Task { @MainActor in
-    |                           `- error: capture of 'self' in a closure that outlives deinit
-366 |             stopScheduler()
-367 |         }
-[14/17] Compiling TelegramUIDScanner SidebarView.swift
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:211:17: warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+209 |         let now = Date()
+210 |         
+211 |         for var task in scheduledTasks where task.isActive {
+    |                 `- warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+212 |             guard let nextRun = task.nextRun else { continue }
+213 |             
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/LogView.swift:41:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 39 |                     .padding(.vertical, 4)
+ 40 |                 }
+ 41 |                 .onChange(of: appState.logs.count) { _ in
+    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 42 |                     if let lastId = appState.logs.first?.id {
+ 43 |                         withAnimation {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/LogView.swift:41:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 39 |                     .padding(.vertical, 4)
+ 40 |                 }
+ 41 |                 .onChange(of: appState.logs.count) { _ in
+    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 42 |                     if let lastId = appState.logs.first?.id {
+ 43 |                         withAnimation {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[24/27] Compiling TelegramUIDScanner QueueManager.swift
 mk@mav TelegramUIDScanner % 
