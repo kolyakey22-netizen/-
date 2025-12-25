@@ -1,31 +1,3 @@
-mk@mav ~ % cd ~/TelegramUIDScanner
-
-mk@mav TelegramUIDScanner % >....                                               
-// Простой сервис мониторинга
-@MainActor
-class MonitoringService {
-    static let shared = MonitoringService()
-
-    var systemMetrics: SystemMetrics {
-        let processInfo = ProcessInfo.processInfo
-        return SystemMetrics(
-            memoryUsage: processInfo.physicalMemory,
-            cpuCount: processInfo.processorCount,
-            systemUptime: processInfo.systemUptime,
-            activeProcessors: processInfo.activeProcessorCount
-        )
-    }
-
-    struct SystemMetrics {
-        let memoryUsage: UInt64
-        let cpuCount: Int
-        let systemUptime: TimeInterval
-        let activeProcessors: Int
-    }
-}
-EOF
-mk@mav TelegramUIDScanner % swift build
-
 [1/1] Planning build
 Building for debugging...
 error: emit-module command failed with exit code 1 (use -v to see invocation)
@@ -191,4 +163,359 @@ Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with
 318 |             stopScheduler()
 319 |         }
 [4/7] Compiling TelegramUIDScanner SchedulerService.swift
-mk@mav TelegramUIDScanner % 
+mk@mav TelegramUIDScanner % cd ~/TelegramUIDScanner
+mk@mav TelegramUIDScanner % rm Sources/TelegramUIDScanner/Services/MonitoringService.swift
+
+mk@mav TelegramUIDScanner % >....                                          
+@MainActor
+class MonitoringService {
+    static let shared = MonitoringService()
+
+    var systemMetrics: SystemMetrics {
+        let processInfo = ProcessInfo.processInfo
+        return SystemMetrics(
+            memoryUsage: processInfo.physicalMemory,
+            cpuCount: processInfo.processorCount,
+            systemUptime: processInfo.systemUptime,
+            activeProcessors: processInfo.activeProcessorCount
+        )
+    }
+
+    struct SystemMetrics {
+        let memoryUsage: UInt64
+        let cpuCount: Int
+        let systemUptime: TimeInterval
+        let activeProcessors: Int
+    }
+}
+EOF
+
+mk@mav TelegramUIDScanner % swift build
+
+[1/1] Planning build
+Building for debugging...
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+    |            `- note: initializer 'init(from:)' will not be used to satisfy the conformance to 'Decodable'
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+ 30 |         self.init()
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Decodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Decodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+    :
+ 38 |     }
+ 39 |     
+ 40 |     public func encode(to encoder: Encoder) throws {
+    |                 `- note: instance method 'encode(to:)' will not be used to satisfy the conformance to 'Encodable'
+ 41 |         var container = encoder.container(keyedBy: CodingKeys.self)
+ 42 |         try container.encodeIfPresent(year, forKey: .year)
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Encodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Encodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+    |            `- note: initializer 'init(from:)' will not be used to satisfy the conformance to 'Decodable'
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+ 30 |         self.init()
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Decodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Decodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+    :
+ 38 |     }
+ 39 |     
+ 40 |     public func encode(to encoder: Encoder) throws {
+    |                 `- note: instance method 'encode(to:)' will not be used to satisfy the conformance to 'Encodable'
+ 41 |         var container = encoder.container(keyedBy: CodingKeys.self)
+ 42 |         try container.encodeIfPresent(year, forKey: .year)
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Encodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Encodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:332:9: error: call to main actor-isolated instance method 'stopScheduler()' in a synchronous nonisolated context [#ActorIsolatedCall]
+221 |     }
+222 |     
+223 |     func stopScheduler() {
+    |          `- note: calls to instance method 'stopScheduler()' from outside of its actor context are implicitly asynchronous
+224 |         isSchedulerActive = false
+225 |         schedulerTask?.cancel()
+    :
+330 |     
+331 |     deinit {
+332 |         stopScheduler()
+    |         `- error: call to main actor-isolated instance method 'stopScheduler()' in a synchronous nonisolated context [#ActorIsolatedCall]
+333 |     }
+334 | }
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+    |            `- note: initializer 'init(from:)' will not be used to satisfy the conformance to 'Decodable'
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+ 30 |         self.init()
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Decodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Decodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+    :
+ 38 |     }
+ 39 |     
+ 40 |     public func encode(to encoder: Encoder) throws {
+    |                 `- note: instance method 'encode(to:)' will not be used to satisfy the conformance to 'Encodable'
+ 41 |         var container = encoder.container(keyedBy: CodingKeys.self)
+ 42 |         try container.encodeIfPresent(year, forKey: .year)
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Encodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Encodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:332:9: error: call to main actor-isolated instance method 'stopScheduler()' in a synchronous nonisolated context [#ActorIsolatedCall]
+221 |     }
+222 |     
+223 |     func stopScheduler() {
+    |          `- note: calls to instance method 'stopScheduler()' from outside of its actor context are implicitly asynchronous
+224 |         isSchedulerActive = false
+225 |         schedulerTask?.cancel()
+    :
+330 |     
+331 |     deinit {
+332 |         stopScheduler()
+    |         `- error: call to main actor-isolated instance method 'stopScheduler()' in a synchronous nonisolated context [#ActorIsolatedCall]
+333 |     }
+334 | }
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Decodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+    |            `- note: initializer 'init(from:)' will not be used to satisfy the conformance to 'Decodable'
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+ 30 |         self.init()
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Decodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Decodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:27:27: warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 25 | 
+ 26 | // Чтобы DateComponents был Codable, нужно добавить ручную реализацию
+ 27 | extension DateComponents: Codable {
+    |                           `- warning: conformance of 'DateComponents' to protocol 'Encodable' was already stated in the type's module 'Foundation'
+ 28 |     public init(from decoder: Decoder) throws {
+ 29 |         let container = try decoder.container(keyedBy: CodingKeys.self)
+    :
+ 38 |     }
+ 39 |     
+ 40 |     public func encode(to encoder: Encoder) throws {
+    |                 `- note: instance method 'encode(to:)' will not be used to satisfy the conformance to 'Encodable'
+ 41 |         var container = encoder.container(keyedBy: CodingKeys.self)
+ 42 |         try container.encodeIfPresent(year, forKey: .year)
+
+Foundation.DateComponents:2:11: note: 'DateComponents' declares conformance to protocol 'Encodable' here
+1 | @available(macOS 10.10, iOS 8.0, watchOS 2.0, tvOS 9.0, *)
+2 | extension DateComponents : Codable {
+  |           `- note: 'DateComponents' declares conformance to protocol 'Encodable' here
+3 |     public init(from decoder: any Decoder) throws
+4 |     public func encode(to encoder: any Encoder) throws
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:332:9: error: call to main actor-isolated instance method 'stopScheduler()' in a synchronous nonisolated context [#ActorIsolatedCall]
+221 |     }
+222 |     
+223 |     func stopScheduler() {
+    |          `- note: calls to instance method 'stopScheduler()' from outside of its actor context are implicitly asynchronous
+224 |         isSchedulerActive = false
+225 |         schedulerTask?.cancel()
+    :
+330 |     
+331 |     deinit {
+332 |         stopScheduler()
+    |         `- error: call to main actor-isolated instance method 'stopScheduler()' in a synchronous nonisolated context [#ActorIsolatedCall]
+333 |     }
+334 | }
+
+[#ActorIsolatedCall]: <https://docs.swift.org/compiler/documentation/diagnostics/actor-isolated-call>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:90:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
+ 88 |             monitoringEnabled = true
+ 89 |             Task {
+ 90 |                 await MonitoringService.shared.startMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
+ 91 |             }
+ 92 |         }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:101:44: error: value of type 'MonitoringService' has no member 'stopMonitoring'
+ 99 |         monitoringEnabled = false
+100 |         Task {
+101 |             await MonitoringService.shared.stopMonitoring()
+    |                                            `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
+102 |         }
+103 |     }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:180:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
+178 |         if monitoringEnabled {
+179 |             Task {
+180 |                 await MonitoringService.shared.startMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
+181 |                 addLog("📊 Мониторинг включен", type: .info)
+182 |             }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:185:48: error: value of type 'MonitoringService' has no member 'stopMonitoring'
+183 |         } else {
+184 |             Task {
+185 |                 await MonitoringService.shared.stopMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
+186 |                 addLog("📊 Мониторинг выключен", type: .info)
+187 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:90:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
+ 88 |             monitoringEnabled = true
+ 89 |             Task {
+ 90 |                 await MonitoringService.shared.startMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
+ 91 |             }
+ 92 |         }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:101:44: error: value of type 'MonitoringService' has no member 'stopMonitoring'
+ 99 |         monitoringEnabled = false
+100 |         Task {
+101 |             await MonitoringService.shared.stopMonitoring()
+    |                                            `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
+102 |         }
+103 |     }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:180:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
+178 |         if monitoringEnabled {
+179 |             Task {
+180 |                 await MonitoringService.shared.startMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
+181 |                 addLog("📊 Мониторинг включен", type: .info)
+182 |             }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:185:48: error: value of type 'MonitoringService' has no member 'stopMonitoring'
+183 |         } else {
+184 |             Task {
+185 |                 await MonitoringService.shared.stopMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
+186 |                 addLog("📊 Мониторинг выключен", type: .info)
+187 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:90:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
+ 88 |             monitoringEnabled = true
+ 89 |             Task {
+ 90 |                 await MonitoringService.shared.startMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
+ 91 |             }
+ 92 |         }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:101:44: error: value of type 'MonitoringService' has no member 'stopMonitoring'
+ 99 |         monitoringEnabled = false
+100 |         Task {
+101 |             await MonitoringService.shared.stopMonitoring()
+    |                                            `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
+102 |         }
+103 |     }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:180:48: error: value of type 'MonitoringService' has no member 'startMonitoring'
+178 |         if monitoringEnabled {
+179 |             Task {
+180 |                 await MonitoringService.shared.startMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'startMonitoring'
+181 |                 addLog("📊 Мониторинг включен", type: .info)
+182 |             }
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Models/AppState.swift:185:48: error: value of type 'MonitoringService' has no member 'stopMonitoring'
+183 |         } else {
+184 |             Task {
+185 |                 await MonitoringService.shared.stopMonitoring()
+    |                                                `- error: value of type 'MonitoringService' has no member 'stopMonitoring'
+186 |                 addLog("📊 Мониторинг выключен", type: .info)
+187 |             }
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/LogView.swift:41:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 39 |                     .padding(.vertical, 4)
+ 40 |                 }
+ 41 |                 .onChange(of: appState.logs.count) { _ in
+    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 42 |                     if let lastId = appState.logs.first?.id {
+ 43 |                         withAnimation {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/LogView.swift:41:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 39 |                     .padding(.vertical, 4)
+ 40 |                 }
+ 41 |                 .onChange(of: appState.logs.count) { _ in
+    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 42 |                     if let lastId = appState.logs.first?.id {
+ 43 |                         withAnimation {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Views/LogView.swift:41:18: warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 39 |                     .padding(.vertical, 4)
+ 40 |                 }
+ 41 |                 .onChange(of: appState.logs.count) { _ in
+    |                  `- warning: 'onChange(of:perform:)' was deprecated in macOS 14.0: Use `onChange` with a two or zero parameter action closure instead. [#DeprecatedDeclaration]
+ 42 |                     if let lastId = appState.logs.first?.id {
+ 43 |                         withAnimation {
+
+[#DeprecatedDeclaration]: <https://docs.swift.org/compiler/documentation/diagnostics/deprecated-declaration>
+[25/28] Compiling TelegramUIDScanner StatisticsView.swift
+mk@mav TelegramUIDSca
