@@ -1,37 +1,215 @@
+mk@mav TelegramUIDScanner % swift build
 
-Fetching https://github.com/apple/swift-collections from cache
-Fetching https://github.com/kishikawakatsumi/KeychainAccess from cache
-Fetching https://github.com/swiftcsv/SwiftCSV from cache
-Fetched https://github.com/kishikawakatsumi/KeychainAccess from cache (0.02s)
-Fetched https://github.com/apple/swift-collections from cache (0.02s)
-Fetched https://github.com/swiftcsv/SwiftCSV from cache (0.02s)
-Creating working copy for https://github.com/kishikawakatsumi/KeychainAccess
-Creating working copy for https://github.com/apple/swift-collections
-Creating working copy for https://github.com/swiftcsv/SwiftCSV
-Working copy of https://github.com/swiftcsv/SwiftCSV resolved at 0.10.0
-Working copy of https://github.com/kishikawakatsumi/KeychainAccess resolved at 4.2.2
-Working copy of https://github.com/apple/swift-collections resolved at 1.3.0
+[1/1] Planning build
 Building for debugging...
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:317:14: error: capture of 'self' in a closure that outlives deinit
-315 |     
-316 |     deinit {
-317 |         Task { @MainActor in
-    |              `- error: capture of 'self' in a closure that outlives deinit
-318 |             stopScheduler()
-319 |         }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:317:14: error: capture of 'self' in a closure that outlives deinit
-315 |     
-316 |     deinit {
-317 |         Task { @MainActor in
-    |              `- error: capture of 'self' in a closure that outlives deinit
-318 |             stopScheduler()
-319 |         }
-/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:317:14: error: capture of 'self' in a closure that outlives deinit
-315 |     
-316 |     deinit {
-317 |         Task { @MainActor in
-    |              `- error: capture of 'self' in a closure that outlives deinit
-318 |             stopScheduler()
-319 |         }
-[379/382] Compiling TelegramUIDScanner StatisticsView.swift
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:215:17: warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+213 |         let now = Date()
+214 |         
+215 |         for var task in scheduledTasks where task.isActive {
+    |                 `- warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+216 |             guard let nextRun = task.nextRun else { continue }
+217 |             
+[10/13] Compiling TelegramUIDScanner SidebarView.swift
+mk@mav TelegramUIDScanner % 
+mk@mav TelegramUIDScanner % swift run
+
+Building for debugging...
+error: emit-module command failed with exit code 1 (use -v to see invocation)
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Encodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Encodable' because 'Schedule' does not conform to 'Encodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Encodable.encode:2:6: note: protocol requires function 'encode(to:)' with type 'Encodable'
+1 | protocol Encodable {
+2 | func encode(to encoder: any Encoder) throws}
+  |      `- note: protocol requires function 'encode(to:)' with type 'Encodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:26:8: error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 24 | }
+ 25 | 
+ 26 | struct ScheduledTask: Identifiable, Codable {
+    |        `- error: type 'ScheduledTask' does not conform to protocol 'Decodable'
+ 27 |     let id: UUID
+ 28 |     var name: String
+ 29 |     var type: TaskType
+ 30 |     var schedule: Schedule
+    |         `- note: cannot automatically synthesize 'Decodable' because 'Schedule' does not conform to 'Decodable'
+ 31 |     var parameters: [String: String]
+ 32 |     var isActive: Bool
+
+Swift.Decodable.init:2:1: note: protocol requires initializer 'init(from:)' with type 'Decodable'
+1 | protocol Decodable {
+2 | init(from decoder: any Decoder) throws}
+  | `- note: protocol requires initializer 'init(from:)' with type 'Decodable'
+3 | 
+
+/Users/mk/TelegramUIDScanner/Sources/TelegramUIDScanner/Services/SchedulerService.swift:215:17: warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+213 |         let now = Date()
+214 |         
+215 |         for var task in scheduledTasks where task.isActive {
+    |                 `- warning: variable 'task' was never mutated; consider removing 'var' to make it constant
+216 |             guard let nextRun = task.nextRun else { continue }
+217 |             
+[3/6] Compiling TelegramUIDScanner SchedulerService.swift
 mk@mav TelegramUIDScanner % 
